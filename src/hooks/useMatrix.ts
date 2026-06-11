@@ -1,21 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function useMatrix() {
 	const [n, setN] = useState<number | "">("")
 	const [m, setM] = useState<number | "">("")
 	const [grid, setGrid] = useState<string[][] | null>(null)
+	const isInternalUpdate = useRef(false) // Flag to not use effect
 
-	const createEmptyMatrix = () => {
-		const rows = n === "" ? 0 : n
-		const cols = m === "" ? 0 : m
-
-		const newMatrix = Array.from({ length: rows }, () =>
-			Array.from({ length: cols }, () => "")
-		)
-		setGrid(newMatrix)
-	}
-
-
+	useEffect(() => {
+		if (isInternalUpdate.current) {
+			isInternalUpdate.current = false
+			return
+		}
+		if (n !== "" && m !== "") {
+		    setGrid(
+			Array.from({ length: n }, () =>
+			    Array.from({ length: m }, () => "")
+			)
+		    )
+		} else {
+		    setGrid(null)
+		}
+	    }, [n, m])
 	const changeElement = (rowIndex: number, colIndex: number, value: string) => {
 		if (!grid) return
 
@@ -34,14 +39,29 @@ export function useMatrix() {
 		setGrid(null)
 	}
 
+	const addRow = () => {
+		if (!grid || m == "") return
+		isInternalUpdate.current = true
+		setGrid([...grid, Array.from({ length: m as number }, () => '')])
+		setN(prev => prev === '' ? 1 : prev + 1)
+	}
+
+	const addCol = () => {
+		if (!grid || n == "") return
+		isInternalUpdate.current = true
+		setGrid(grid.map(row => [...row, '']))
+		setM(prev => prev === '' ? 1 : prev + 1)
+	}
+
 	return {
 		n,
 		m,
 		grid,
 		setN,
 		setM,
-		createEmptyMatrix,
 		changeElement,
+		addRow,
+		addCol,
 		resetMatrix,
 	}
 }

@@ -4,11 +4,26 @@ interface MatrixCardProps {
 	matrix: string[][] | number[][] | null
 	className?: string | null
 	changeElement?: (rowIndex: number, colIndex: number, value: string) => void
+	addRow?: () => void
+	addCol?: () => void
 }
 
-export default function MatrixCard({ matrix, changeElement, className }: MatrixCardProps) {
+export default function MatrixCard({ matrix, changeElement, className, addRow, addCol }: MatrixCardProps) {
+
+	// Map the border if we can edit or no the matrix (addRow, addCol)
+	const matrixBorderRadiousMap= {
+		'false-false': 'rounded-xl',
+		'true-false':  'rounded-t-xl',
+		'false-true':  'rounded-l-xl',
+		'true-true':   'rounded-tl-xl',
+	} as const
+
+	const radius = matrixBorderRadiousMap[`${!!addRow}-${!!addCol}`]
+
 	return (
-		<div className={`bg-gruv-fg0 flex flex-col items-center rounded-xl items-center w-fit mx-auto border ${className}`}>
+		<div className='flex flex-row items-stretch'>
+		<div className='flex flex-col'>
+		<div className={`bg-gruv-fg0 flex flex-col items-center ${radius} items-center w-fit mx-auto border ${className}`}>
 	       {matrix?.map((row, rIdx) => (
 		       <div key={`row-${rIdx}`} className={`flex flex-row justify-center ${matrix.length > rIdx + 1 ? 'border-b' : ''} divide-x`}>
 		       {row.map((item, cIdx) => (
@@ -29,6 +44,18 @@ export default function MatrixCard({ matrix, changeElement, className }: MatrixC
 		       ))}
 			</div>
 	       ))}
+		</div>
+		{addRow && (
+			<button onClick={addRow} className='rounded-b-xl w-full h-6 mr-auto cursor-pointer bg-gruv-orange text-white'>
+			+</button>
+	       )}
+	     </div>
+		{/* Edit dimensions */}
+	       
+	       {addCol && (
+			<button onClick={addCol} className={`rounded-r-xl w-6 ${addRow ? 'mb-6' : ''} self-stretch cursor-pointer bg-gruv-orange text-white`}>
+			+</button>
+	       )}
 	     </div>
 	)	
 }

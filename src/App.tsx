@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMatrix } from './hooks/useMatrix'
 import MatrixCard from './components/MatrixCard'
 import {addMatrices, multiplyMatrices, parseGridToNumbers, subMatrices, transposeMatrix, type CalculationResult} from './utils/matrixMath'
@@ -10,9 +10,29 @@ function App() {
 	const matrixA = useMatrix()
 	const matrixB = useMatrix()
 
-	const [operation, setOperation] = useState<OperationType>('add')
+	const [operation, setOperation] = useState<OperationType>('transpose')
 	const [calcData, setCalcData] = useState<CalculationResult | null>(null)
 	const [error, setError] = useState<string | null>(null)
+
+	const handleSetOperation = (operation: OperationType) => {
+		setCalcData(null)
+		console.log('DEBUG: handleSetOperation '+operation)
+		if (operation == 'add' || operation == 'subtract') {
+			matrixB.setN(matrixA.n)
+			matrixB.setM(matrixA.m)
+
+			// Not editable new matrix
+		} else if (operation == 'multiply') {
+			// Editable new matrix, can add rows
+			matrixB.setN(matrixA.m)
+			matrixB.setM(matrixA.n)
+			console.log('On multiply creating matrix b')
+			console.log('Matrix A n = '+matrixA.n+' m = '+matrixA.m)
+			console.log('Matrix B n = '+matrixB.n+' m = '+matrixB.m)
+		}
+
+		setOperation(operation)
+	}
 
 	const handleCalculate = () => {
 		setError(null)
@@ -47,12 +67,19 @@ function App() {
 			setCalcData(null)
 		}	
 	}
-	const handleCreateMatrixB = () => {
-			matrixB.createEmptyMatrix();
-			setOperation('add')
-		}
-
-  return (
+	useEffect(() => {
+	    if (operation === 'add' || operation === 'subtract') {
+		matrixB.setN(matrixA.n)
+		matrixB.setM(matrixA.m)
+	    } else if (operation === 'multiply') {
+		matrixB.setM(matrixA.n)
+		matrixB.setN(matrixA.m)
+		// don't touch matrixB.n — user controls that
+	    }
+	    setCalcData(null)
+	}, [matrixA.n, matrixA.m])
+	
+	return (
     <>
     <div className='bg-gruv-fg2 min-h-screen flex flex-col text-center px-4'>
     	<h1 className='text-3xl py-4'>Matrix calculator</h1>
@@ -67,19 +94,7 @@ function App() {
 		n={matrixA.n}
 		m={matrixA.m}
 		setN={matrixA.setN}
-		setM={matrixA.setM}
-		onCreate={matrixA.createEmptyMatrix}/>
-		
-
-       {/* Second Matrix Input*/}
-       <MatrixCreationInput
-		n={matrixB.n}
-		m={matrixB.m}
-		setN={matrixB.setN}
-		setM={matrixB.setM}
-		onCreate={handleCreateMatrixB}/>
-		
-
+		setM={matrixA.setM}/>
        </div>
 
 
@@ -88,17 +103,18 @@ function App() {
        {matrixA.grid && (
 	<div className='mx-auto'>
 		<h3 className="text-lg font-bold mb-2 text-gruv-orange">A</h3>
-	       <MatrixCard matrix={matrixA.grid} changeElement={matrixA.changeElement}/>
+	       <MatrixCard matrix={matrixA.grid} changeElement={matrixA.changeElement} addRow = {matrixA.addRow} addCol = {matrixA.addCol}/>
 	       </div>
        )}
 
 
-       {matrixA.grid && matrixB.grid && (
+       {matrixA.grid && (
 	       <div className='flex flex-row items-center mx-auto'>
 	       <select 
 		  id="operation-select"
 		  value={operation}
-		  onChange={(e) => setOperation(e.target.value as OperationType)}
+		  defaultValue={operation}
+		  onChange={(e) => handleSetOperation(e.target.value as OperationType)}
 		  className="bg-gruv-fg1 border border-neutral-600 rounded p-2 text-black font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
 		>
 		  <option value="add">+</option>
@@ -111,14 +127,21 @@ function App() {
        )}
 
        {/* Second matrix show */}
-       {matrixB.grid && operation != 'transpose' && (
+       {matrixB.grid && (operation == 'add' || operation == 'subtract') && (
 	<div className='mx-auto'>
 		<h3 className="text-lg font-bold mb-2 text-gruv-orange">B</h3>
 		<MatrixCard matrix={matrixB.grid} changeElement={matrixB.changeElement}/>
 	</div>
        )}
 
-       {matrixA.grid && matrixB.grid && (
+	{matrixB.grid && operation == 'multiply' && (
+	<div className='mx-auto'>
+		<h3 className="text-lg font-bold mb-2 text-gruv-orange">B</h3>
+		<MatrixCard matrix={matrixB.grid} changeElement={matrixB.changeElement} addCol={matrixB.addCol}/>
+	</div>
+       )}
+
+       {matrixA.grid && (
 		<button
 		  className="bg-gruv-orange text-gruv-fg1 rounded p-2 text-black font-medium cursor-pointer mx-auto px-4"
 		  onClick = {() => handleCalculate()}>
