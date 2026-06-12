@@ -7,12 +7,17 @@ import MatrixCreationInput from './components/MatrixCreationInput'
 type OperationType = 'add' | 'subtract' | 'multiply' | 'transpose'
 
 function App() {
-	const matrixA = useMatrix()
-	const matrixB = useMatrix()
+
+	const internalMatrixA = useMatrix()
+	const internalMatrixB = useMatrix()
 
 	const [operation, setOperation] = useState<OperationType>('transpose')
 	const [calcData, setCalcData] = useState<CalculationResult | null>(null)
 	const [error, setError] = useState<string | null>(null)
+	const [isSwapped, setIsSwapped] = useState(false)
+
+	const matrixA = isSwapped ? internalMatrixB : internalMatrixA 
+	const matrixB = isSwapped ? internalMatrixA : internalMatrixB 
 
 	const handleSetOperation = (operation: OperationType) => {
 		setCalcData(null)
@@ -67,6 +72,11 @@ function App() {
 			setCalcData(null)
 		}	
 	}
+
+	const handleSwapMatrix = () => {
+		setIsSwapped(prev => !prev)
+	}
+
 	useEffect(() => {
 	    if (operation === 'add' || operation === 'subtract') {
 		matrixB.setN(matrixA.n)
@@ -103,13 +113,14 @@ function App() {
        {matrixA.grid && (
 	<div className='mx-auto'>
 		<h3 className="text-lg font-bold mb-2 text-gruv-orange">A</h3>
-	       <MatrixCard matrix={matrixA.grid} changeElement={matrixA.changeElement} addRow = {matrixA.addRow} addCol = {matrixA.addCol}/>
+	       <MatrixCard matrix={matrixA.grid} changeElement={matrixA.changeElement} addRow = {matrixA.addRow} removeRow={matrixA.removeRow} addCol = {matrixA.addCol} removeCol = {matrixA.removeCol}/>
 	       </div>
        )}
 
 
+       <div className='flex flex-row mx-auto gap-2'>
        {matrixA.grid && (
-	       <div className='flex flex-row items-center mx-auto'>
+	       <div className='flex flex-row items-center'>
 	       <select 
 		  id="operation-select"
 		  value={operation}
@@ -121,10 +132,17 @@ function App() {
 		  <option value="subtract">-</option>
 		  <option value="multiply">×</option>
 		  <option value="transpose">T</option>
-		</select>
-			
+		</select>		
 	       </div>
        )}
+       {operation != 'transpose' && (
+			<button 
+				className='bg-gruv-fg1 border border-neutral-600 rounded p-2 cursor-pointer' 
+				onClick={() => handleSwapMatrix()}>
+			⇄
+			</button>
+		)}
+       </div>
 
        {/* Second matrix show */}
        {matrixB.grid && (operation == 'add' || operation == 'subtract') && (
@@ -137,7 +155,7 @@ function App() {
 	{matrixB.grid && operation == 'multiply' && (
 	<div className='mx-auto'>
 		<h3 className="text-lg font-bold mb-2 text-gruv-orange">B</h3>
-		<MatrixCard matrix={matrixB.grid} changeElement={matrixB.changeElement} addCol={matrixB.addCol}/>
+		<MatrixCard matrix={matrixB.grid} changeElement={matrixB.changeElement} addCol={matrixB.addCol} removeCol={matrixB.removeCol}/>
 	</div>
        )}
 

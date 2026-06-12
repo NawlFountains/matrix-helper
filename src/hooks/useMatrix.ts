@@ -53,6 +53,20 @@ export function useMatrix() {
 		setM(prev => prev === '' ? 1 : prev + 1)
 	}
 
+	const removeRow = () => {
+		if (!grid || (n as number) <= 1) return
+		isInternalUpdate.current = true
+		setGrid(grid.slice(0, -1))
+		setN(prev => prev === '' ? 1 : prev - 1)
+	}
+
+	const removeCol = () => {
+		if (!grid || (m as number <= 1)) return
+		isInternalUpdate.current = true
+		setGrid(grid.map (row => row.slice(0, -1)))
+		setM(prev => prev === '' ? 1 : prev - 1)
+	}
+
 	return {
 		n,
 		m,
@@ -61,7 +75,9 @@ export function useMatrix() {
 		setM,
 		changeElement,
 		addRow,
+		removeRow,
 		addCol,
+		removeCol,
 		resetMatrix,
 	}
 }

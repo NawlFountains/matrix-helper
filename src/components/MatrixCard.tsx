@@ -5,10 +5,12 @@ interface MatrixCardProps {
 	className?: string | null
 	changeElement?: (rowIndex: number, colIndex: number, value: string) => void
 	addRow?: () => void
+	removeRow?: () => void
 	addCol?: () => void
+	removeCol?: () => void
 }
 
-export default function MatrixCard({ matrix, changeElement, className, addRow, addCol }: MatrixCardProps) {
+export default function MatrixCard({ matrix, changeElement, className, addRow, removeRow, addCol, removeCol }: MatrixCardProps) {
 
 	// Map the border if we can edit or no the matrix (addRow, addCol)
 	const matrixBorderRadiousMap= {
@@ -45,16 +47,24 @@ export default function MatrixCard({ matrix, changeElement, className, addRow, a
 			</div>
 	       ))}
 		</div>
-		{addRow && (
+		{removeRow && addRow && (
+			<div className='flex flex-row'>
+			<button onClick={removeRow} className='rounded-b-xl w-full h-6 mr-auto cursor-pointer bg-gruv-red text-white'>
+			-</button>
 			<button onClick={addRow} className='rounded-b-xl w-full h-6 mr-auto cursor-pointer bg-gruv-orange text-white'>
 			+</button>
+			</div>
 	       )}
 	     </div>
 		{/* Edit dimensions */}
 	       
-	       {addCol && (
-			<button onClick={addCol} className={`rounded-r-xl w-6 ${addRow ? 'mb-6' : ''} self-stretch cursor-pointer bg-gruv-orange text-white`}>
+	       {addCol && removeCol && (
+		       <div className={`flex flex-col self-stretch ${addRow ? 'mb-6' : ''}`}>
+			<button onClick={addCol} className={`rounded-r-xl w-6 flex-1 cursor-pointer bg-gruv-orange text-white`}>
 			+</button>
+			<button onClick={removeCol} className={`rounded-r-xl w-6 flex-1 cursor-pointer bg-gruv-red text-white`}>
+			-</button>
+			</div>
 	       )}
 	     </div>
 	)	
