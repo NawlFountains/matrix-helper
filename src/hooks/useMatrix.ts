@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
 export function useMatrix() {
-	const [n, setN] = useState<number | "">("")
-	const [m, setM] = useState<number | "">("")
-	const [grid, setGrid] = useState<string[][] | null>(null)
+	const [n, setN] = useState<number | "">(3)
+	const [m, setM] = useState<number | "">(3)
+	const [grid, setGrid] = useState<string[][] | null>(null) 
 	const isInternalUpdate = useRef(false) // Flag to not use effect
 
 	useEffect(() => {

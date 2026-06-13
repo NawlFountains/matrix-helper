@@ -32,7 +32,7 @@ export default function MatrixCard({ matrix, changeElement, className, addRow, r
 			       changeElement ? (
 			       <input 
 					key={`cell-${rIdx}-${cIdx}`} 
-					className='m-1 p-2 text-center w-12' 
+					className='m-1 p-2 text-center w-12 focus:bg-gruv-orange focus:text-gruv-fg0 transition-all' 
 					placeholder='0'
 					value={item}
 					onChange={(e) => changeElement(rIdx,cIdx,e.target.value)}/>

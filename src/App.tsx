@@ -78,6 +78,11 @@ function App() {
 	}
 
 	useEffect(() => {
+		setCalcData(null)
+		setError(null)
+	}, [matrixA.grid, matrixB.grid])
+
+	useEffect(() => {
 	    if (operation === 'add' || operation === 'subtract') {
 		matrixB.setN(matrixA.n)
 		matrixB.setM(matrixA.m)
@@ -88,6 +93,7 @@ function App() {
 	    }
 	    setCalcData(null)
 	}, [matrixA.n, matrixA.m])
+
 	
 	return (
     <>
@@ -95,9 +101,6 @@ function App() {
     	<h1 className='text-3xl py-4'>Matrix calculator</h1>
 
       <div className='flex flex-col gap-5'>
-       <div>
-	<p>Enter the dimension of the matrices</p>
-       </div>
        <div className='flex flex-row gap-2 mx-auto'>
        {/* First Matrix Input */}
        <MatrixCreationInput
