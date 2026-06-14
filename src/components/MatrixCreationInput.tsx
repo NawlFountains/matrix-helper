@@ -29,7 +29,7 @@ export default function MatrixCreationInput({n, m, setN, setM} : MatrixCreationI
 
 			<span className='absolute left-2 transition-all group-focus-within:text-gruv-fg1'>n:</span>
 			<input className='text-center p-1 rounded-xl w-full pl-10 focus:bg-gruv-orange focus:text-gruv-fg1 transition-all' placeholder='n' type='number' value={n} 
-			onChange={(e) => setN(e.target.value === '' ? '' : Number(e.target.value))}/>
+			onChange={(e) => setN(e.target.value === '' ? '' : Math.max(1, Number(e.target.value)))}/>
 
 		       </div>
 		       
@@ -41,7 +41,7 @@ export default function MatrixCreationInput({n, m, setN, setM} : MatrixCreationI
 
 			<span className='absolute left-2 transition-all group-focus-within:text-gruv-fg1'>m:</span>
 			<input className='text-center p-1 rounded-xl w-full pl-10 focus:bg-gruv-orange focus:text-gruv-fg1 transition-all' placeholder='m' type='number' value={m} 
-			onChange={(e) => setM(e.target.value === '' ? '' : Number(e.target.value))}/>
+			onChange={(e) => setM(e.target.value === '' ? '' : Math.max(1, Number(e.target.value)))}/>
 
 		       </div>
 	       </div>

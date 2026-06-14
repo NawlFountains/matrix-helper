@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useMatrix } from './hooks/useMatrix'
 import MatrixCard from './components/MatrixCard'
-import {addMatrices, multiplyMatrices, parseGridToNumbers, subMatrices, transposeMatrix, type CalculationResult} from './utils/matrixMath'
+import {addMatrices, calculateDeterminant, multiplyMatrices, parseGridToNumbers, subMatrices, transposeMatrix, type MatrixResult, type ScalarResult} from './utils/matrixMath'
 import MatrixCreationInput from './components/MatrixCreationInput'
 
-type OperationType = 'add' | 'subtract' | 'multiply' | 'transpose'
+type OperationType = 'add' | 'subtract' | 'multiply' | 'transpose' | 'determinant'
 
 function App() {
 
@@ -12,7 +12,8 @@ function App() {
 	const internalMatrixB = useMatrix()
 
 	const [operation, setOperation] = useState<OperationType>('transpose')
-	const [calcData, setCalcData] = useState<CalculationResult | null>(null)
+	const [matrixResult, setMatrixResult] = useState<MatrixResult | null>(null)
+	const [scalarResult, setScalarResult] = useState<ScalarResult | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [isSwapped, setIsSwapped] = useState(false)
 
@@ -20,7 +21,8 @@ function App() {
 	const matrixB = isSwapped ? internalMatrixA : internalMatrixB 
 
 	const handleSetOperation = (operation: OperationType) => {
-		setCalcData(null)
+		setMatrixResult(null)
+		setScalarResult(null)
 		console.log('DEBUG: handleSetOperation '+operation)
 		if (operation == 'add' || operation == 'subtract') {
 			matrixB.setN(matrixA.n)
@@ -47,29 +49,35 @@ function App() {
 
 
 		try {
-			let data: CalculationResult 
+			let matrixData: MatrixResult = null
+			let scalarData: ScalarResult = null
 
 			switch (operation) {
 				case 'add':
-					data = addMatrices(numA, numB)
+					matrixData = addMatrices(numA, numB)
 					break
 				case 'subtract':
-					data = subMatrices(numA, numB)
+					matrixData = subMatrices(numA, numB)
 					break
 				case 'multiply':
-					data = multiplyMatrices(numA, numB)
+					matrixData = multiplyMatrices(numA, numB)
 					break
 				case 'transpose':
-					data = transposeMatrix(numA)
+					matrixData = transposeMatrix(numA)
+					break
+				case 'determinant':
+					scalarData = calculateDeterminant(numA)
 					break
 				default:
 					return
 			}
 
-			setCalcData(data)
+			setMatrixResult(matrixData)
+			setScalarResult(scalarData)
 		} catch (err: any) {
 			setError(err.message)
-			setCalcData(null)
+			setMatrixResult(null)
+			setScalarResult(null)
 		}	
 	}
 
@@ -78,7 +86,8 @@ function App() {
 	}
 
 	useEffect(() => {
-		setCalcData(null)
+		setMatrixResult(null)
+		setScalarResult(null)
 		setError(null)
 	}, [matrixA.grid, matrixB.grid])
 
@@ -91,7 +100,8 @@ function App() {
 		matrixB.setN(matrixA.m)
 		// don't touch matrixB.n — user controls that
 	    }
-	    setCalcData(null)
+	    setMatrixResult(null)
+	    setScalarResult(null)
 	}, [matrixA.n, matrixA.m])
 
 	
@@ -135,11 +145,14 @@ function App() {
 		  <option value="subtract">-</option>
 		  <option value="multiply">×</option>
 		  <option value="transpose">T</option>
+		  <option value="determinant">det</option>
+
 		</select>		
 	       </div>
        )}
-       {operation != 'transpose' && (
+       {operation !== 'transpose' && operation !== 'determinant' && (
 			<button 
+				id='swap-button'
 				className='bg-gruv-fg1 border border-neutral-600 rounded p-2 cursor-pointer' 
 				onClick={() => handleSwapMatrix()}>
 			⇄
@@ -173,13 +186,14 @@ function App() {
        {error && <p className='text-gruv-red'>{error}</p>}
 
        {/* Result section */}
-       {calcData && (
+
+       {/* Matrix result */}
+       {matrixResult && (
 	 <div className="flex flex-col gap-8 justify-center items-start mt-4 mx-auto">
           
-          {/* Matrix result */}
           <div className='mx-auto'>
             <h3 className="text-lg font-bold mb-2 text-gruv-yellow">Result</h3>
-            <MatrixCard matrix={calcData.result} className='bg-gruv-fg0'/>
+            <MatrixCard matrix={matrixResult.result} className='bg-gruv-fg0'/>
           </div>
 
           {/* Solution steps */}
@@ -188,7 +202,33 @@ function App() {
 		Step by step solution for {operation}:
             </h3>
             <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-2">
-              {calcData.steps.map((step, idx) => (
+              {matrixResult.steps.map((step, idx) => (
+                <p key={`step-${idx}`} className="text-neutral-300">
+                  {step}
+                </p>
+              ))}
+            </div>
+          </div>
+
+        </div>
+       )}
+
+       {/* Scalar result */}
+       {scalarResult && (
+	 <div className="flex flex-col gap-8 justify-center items-start mt-4 mx-auto">
+          
+          <div className='mx-auto'>
+            <h3 className="text-lg font-bold mb-2 text-gruv-yellow">Result</h3>
+	    <p>{scalarResult.result}</p>
+          </div>
+
+          {/* Solution steps */}
+          <div className="bg-neutral-800 border border-neutral-700 p-4 rounded-xl w-full text-left font-mono text-sm shadow-md">
+            <h3 className="text-lg font-bold mb-3 text-gruv-yellow border-b pb-1">
+		Step by step solution for {operation}:
+            </h3>
+            <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-2">
+              {scalarResult.steps.map((step, idx) => (
                 <p key={`step-${idx}`} className="text-neutral-300">
                   {step}
                 </p>
