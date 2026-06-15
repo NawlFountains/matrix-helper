@@ -8,6 +8,11 @@
 
 A simple front-end in React with Typescript for helping and visualizing steps in Matrix operations
 
+## Demo
+[Live demo](https://matrix-helper.vercel.app/)
+
+![demo](assets/demo.gif)
+
 ## Setup 
 
 1. **Clone the repository:**
