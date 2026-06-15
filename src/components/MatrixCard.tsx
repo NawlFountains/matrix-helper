@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface MatrixCardProps {
 	matrix: string[][] | number[][] | null
 	className?: string | null
