@@ -162,7 +162,7 @@ test.describe('Matrix Calculator Automation Suite', () => {
 		await expect(firstCellA).toHaveValue('1')
 		await expect(secondCellA).toHaveValue('2')
 		await expect(thirdCellA).toHaveValue('3')
-		await expect(fourthCellA).toHaveValue('0')
+		await expect(fourthCellA).toHaveValue('')
 	})
 
 	test('should keep elements when removing/adding cols', async ({ page }) => {

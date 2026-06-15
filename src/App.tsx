@@ -103,7 +103,7 @@ function App() {
 	
 	return (
     <>
-    <div className='bg-gruv-fg2 min-h-screen flex flex-col text-center px-4'>
+    <div className='bg-gruv-fg2 min-h-screen flex flex-col text-center px-4 font-inter'>
     	<h1 className='text-3xl py-4'>Matrix calculator</h1>
 
       <div className='flex flex-col gap-5'>

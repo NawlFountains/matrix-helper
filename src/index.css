@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
+  --font-inter: "Inter", sans-serif;
   /* Dark Mode Backgrounds */
   --color-gruv-bg0: #282828;
   --color-gruv-bg1: #3c3836;
