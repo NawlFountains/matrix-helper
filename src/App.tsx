@@ -45,8 +45,8 @@ function App() {
 
 
 		try {
-			let matrixData: MatrixResult = null
-			let scalarData: ScalarResult = null
+			let matrixData: MatrixResult | null = null
+			let scalarData: ScalarResult | null = null
 
 			switch (operation) {
 				case 'add':

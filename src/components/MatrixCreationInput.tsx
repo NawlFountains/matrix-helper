@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface MatrixCreationInputProps {
 	n: number | '';
 	m: number | '';
