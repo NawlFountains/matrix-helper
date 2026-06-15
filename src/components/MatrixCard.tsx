@@ -47,22 +47,25 @@ export default function MatrixCard({ matrix, changeElement, className, addRow, r
 			</div>
 	       ))}
 		</div>
+
+		{/* Add/Remove rows*/}
+
 		{removeRow && addRow && (
 			<div className='flex flex-row'>
-			<button onClick={removeRow} className='rounded-b-xl w-full h-6 mr-auto cursor-pointer bg-gruv-red text-white'>
+			<button data-testid='remove-row-btn' onClick={removeRow} className='rounded-b-xl w-full h-6 mr-auto cursor-pointer bg-gruv-red text-white'>
 			-</button>
-			<button onClick={addRow} className='rounded-b-xl w-full h-6 mr-auto cursor-pointer bg-gruv-orange text-white'>
+			<button data-testid='add-row-btn' onClick={addRow} className='rounded-b-xl w-full h-6 mr-auto cursor-pointer bg-gruv-orange text-white'>
 			+</button>
 			</div>
 	       )}
 	     </div>
-		{/* Edit dimensions */}
+		{/* Add/remove cols*/}
 	       
 	       {addCol && removeCol && (
 		       <div className={`flex flex-col self-stretch ${addRow ? 'mb-6' : ''}`}>
-			<button onClick={addCol} className={`rounded-r-xl w-6 flex-1 cursor-pointer bg-gruv-orange text-white`}>
+			<button data-testid='add-col-btn' onClick={addCol} className={`rounded-r-xl w-6 flex-1 cursor-pointer bg-gruv-orange text-white`}>
 			+</button>
-			<button onClick={removeCol} className={`rounded-r-xl w-6 flex-1 cursor-pointer bg-gruv-red text-white`}>
+			<button data-testid='remove-col-btn' onClick={removeCol} className={`rounded-r-xl w-6 flex-1 cursor-pointer bg-gruv-red text-white`}>
 			-</button>
 			</div>
 	       )}

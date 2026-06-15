@@ -23,7 +23,6 @@ function App() {
 	const handleSetOperation = (operation: OperationType) => {
 		setMatrixResult(null)
 		setScalarResult(null)
-		console.log('DEBUG: handleSetOperation '+operation)
 		if (operation == 'add' || operation == 'subtract') {
 			matrixB.setN(matrixA.n)
 			matrixB.setM(matrixA.m)
@@ -33,9 +32,6 @@ function App() {
 			// Editable new matrix, can add rows
 			matrixB.setN(matrixA.m)
 			matrixB.setM(matrixA.n)
-			console.log('On multiply creating matrix b')
-			console.log('Matrix A n = '+matrixA.n+' m = '+matrixA.m)
-			console.log('Matrix B n = '+matrixB.n+' m = '+matrixB.m)
 		}
 
 		setOperation(operation)
@@ -137,7 +133,6 @@ function App() {
 	       <select 
 		  id="operation-select"
 		  value={operation}
-		  defaultValue={operation}
 		  onChange={(e) => handleSetOperation(e.target.value as OperationType)}
 		  className="bg-gruv-fg1 border border-neutral-600 rounded p-2 text-black font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
 		>
